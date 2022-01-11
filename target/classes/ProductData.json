@@ -1,0 +1,24 @@
+{
+  "products": [
+    {
+      "name": "A",
+      "unitPrice": 50.0,
+      "inStock": 10
+    },
+    {
+      "name": "B",
+      "unitPrice": 30.0,
+      "inStock": 8
+    },
+    {
+      "name": "C",
+      "unitPrice": 20.0,
+      "inStock": 12
+    },
+    {
+      "name": "D",
+      "unitPrice": 15.0,
+      "inStock": 15
+    }
+  ]
+}
