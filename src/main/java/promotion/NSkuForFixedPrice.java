@@ -16,7 +16,6 @@ public class NSkuForFixedPrice implements Rules {
     @Override
     public BigDecimal calculateTotal(Cart cart) {
         BigDecimal total = BigDecimal.valueOf(0);
-
         List<Product> productPurchaseList = cart.getItemsInCart();
             for (Product product : productPurchaseList) {
                 String purchaseProductID = product.getProductID();

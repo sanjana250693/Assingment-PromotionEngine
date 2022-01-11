@@ -14,10 +14,12 @@ import java.util.Objects;
 
 public class NSkuForFixedPriceTest {
     NSkuForFixedPrice nSkuForFixedPrice;
+    NSkuForFixedPrice nSkuForFixedPriceForB;
 
     @BeforeEach
     public void setup(){
         nSkuForFixedPrice = new NSkuForFixedPrice("A", 3, BigDecimal.valueOf(130));
+        nSkuForFixedPriceForB = new NSkuForFixedPrice("B", 2,  BigDecimal.valueOf(45));
     }
 
     @Test
@@ -39,6 +41,27 @@ public class NSkuForFixedPriceTest {
         Product productA = createProduct("A", BigDecimal.valueOf(50), 0, 10);
         Cart cart = createCart(new ArrayList<>(Arrays.asList(productA)));
         assert Objects.equals(nSkuForFixedPrice.calculateTotal(cart), BigDecimal.valueOf(0));
+    }
+
+    @Test
+    public void testInValidNSkuPromotionForB(){
+        Product productB = createProduct("B", BigDecimal.valueOf(30), 2, 10);
+        Cart cart = createCart(new ArrayList<>(Arrays.asList(productB)));
+        assert Objects.equals(nSkuForFixedPrice.calculateTotal(cart), BigDecimal.valueOf(0));
+    }
+
+    @Test
+    public void testValidNSkuPromotionForB(){
+        Product productB = createProduct("B", BigDecimal.valueOf(30), 2, 10);
+        Cart cart = createCart(new ArrayList<>(Arrays.asList(productB)));
+        assert Objects.equals(nSkuForFixedPriceForB.calculateTotal(cart), BigDecimal.valueOf(45));
+    }
+
+    @Test
+    public void testValidNSkuPromotionForMultiplePromotion(){
+        Product productB = createProduct("B", BigDecimal.valueOf(30), 5, 10);
+        Cart cart = createCart(new ArrayList<>(Arrays.asList(productB)));
+        assert Objects.equals(nSkuForFixedPriceForB.calculateTotal(cart), BigDecimal.valueOf(120));
     }
 
     private Product createProduct(String productID, BigDecimal unitPrice, Integer quantity, Integer inStock) {
