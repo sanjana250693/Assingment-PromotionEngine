@@ -29,7 +29,9 @@ public class SampleDataTest {
 
     @BeforeEach
     public void setup(){
-
+        nSkuForFixedPriceForA = new NSkuForFixedPrice("A", 3, BigDecimal.valueOf(130));
+        nSkuForFixedPriceForB = new NSkuForFixedPrice("B", 2, BigDecimal.valueOf(45));
+        multipleSkuForFixedPrice = new MultipleSkuForFixedPrice(new ArrayList<>(Arrays.asList("C", "D")), BigDecimal.valueOf(30));
     }
 
     @Test
