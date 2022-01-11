@@ -11,19 +11,19 @@ import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
-public class multipleSkuForFixedPrice implements Rules {
+public class MultipleSkuForFixedPrice implements Rules {
     private ArrayList<String> listOfSku;
     private BigDecimal promotionPrice;
 
     @Override
     public BigDecimal calculateTotal(Cart cart) {
         BigDecimal total = BigDecimal.valueOf(0);
+
         Map<String, Integer> skuInCart = new HashMap<>();
         List<Product> cartItems = cart.getItemsInCart();
         createSkuMap(skuInCart, cartItems);
 
-        if(isPromotionApplicable(cart, skuInCart)){
-            //If promotion is applicable to the items in cart, calculate total based on total.
+        if(isPromotionApplicable(skuInCart)){
             Integer totalNoOfProducts = 0;
             Map.Entry<String, Integer> minEntry = null;
             for (Map.Entry<String, Integer> entry : skuInCart.entrySet()) {
@@ -31,24 +31,22 @@ public class multipleSkuForFixedPrice implements Rules {
                 totalNoOfProducts += entry.getValue();
             }
 
-            total = computeTotal(total, BigDecimal.valueOf(minEntry.getValue()), promotionPrice);
+            total = total.add(BigDecimal.valueOf(minEntry.getValue()).multiply(promotionPrice));
             if(totalNoOfProducts - minEntry.getValue() > minEntry.getValue()) {
                 //Calculate unit price for remaining qty which do not
-                total = computeTotalForRemainingQty(cartItems, total, skuInCart, minEntry);
+                total = calculateUnitPrice(cartItems, total, skuInCart, minEntry);
             }
-
         }else{
-            //If promotion is not applicable, calculate total as qty*unitPrice.
             for(Product product : cartItems){
                 if(skuInCart.containsKey(product.getProductID())){
-                    total = computeTotal(total, product.getUnitPrice(), BigDecimal.valueOf(product.getPurchaseQuantity()));
+                    total = product.getUnitPrice().multiply(BigDecimal.valueOf(product.getPurchaseQuantity()));
                 }
             }
         }
         return total;
     }
 
-    private Map.Entry<String, Integer> fetchMinEntryFromMap(Map.Entry<String, Integer> minEntry, Map.Entry<String, Integer> entry) {
+    private Map.Entry<String, Integer> fetchMinEntryFromMap (Map.Entry<String, Integer> minEntry, Map.Entry<String, Integer> entry) {
         if (minEntry == null || entry.getValue().compareTo(minEntry.getValue()) < 0) {
             minEntry = entry;
         }
@@ -63,31 +61,25 @@ public class multipleSkuForFixedPrice implements Rules {
         }
     }
 
-    private BigDecimal computeTotal(BigDecimal total, BigDecimal itemQty, BigDecimal price) {
-        total = total.add(itemQty).multiply(price);
-        return total;
-    }
-
-    private BigDecimal computeTotalForRemainingQty(List<Product> cartItems, BigDecimal total, Map<String, Integer> skuInCart, Map.Entry<String, Integer> minEntry) {
+    private BigDecimal calculateUnitPrice(List<Product> cartItems, BigDecimal total, Map<String, Integer> skuInCart, Map.Entry<String, Integer> minEntry) {
         for(Map.Entry<String, Integer> availableQty : skuInCart.entrySet()){
-            Integer minValueFromMap = minEntry.getValue();
-            if(availableQty.getValue() > minValueFromMap){
-                total = computeTotalForUnitPrice(cartItems, total, availableQty, minValueFromMap);
+            if(availableQty.getValue() > minEntry.getValue()){
+                total = computeTotalForRemainingQty(cartItems, total, minEntry, availableQty);
             }
         }
         return total;
     }
 
-    private BigDecimal computeTotalForUnitPrice(List<Product> cartItems, BigDecimal total, Map.Entry<String, Integer> availableQty, Integer minValueFromMap) {
+    private BigDecimal computeTotalForRemainingQty(List<Product> cartItems, BigDecimal total, Map.Entry<String, Integer> minEntry, Map.Entry<String, Integer> availableQty) {
         for (Product product : cartItems) {
             if (product.getProductID().equals(availableQty.getKey())) {
-                total = computeTotal(total, BigDecimal.valueOf(availableQty.getValue()- minValueFromMap), product.getUnitPrice());
+                total = total.add(BigDecimal.valueOf(availableQty.getValue()- minEntry.getValue()).multiply(product.getUnitPrice()));
             }
         }
         return total;
     }
 
-    private boolean isPromotionApplicable(Cart cart, Map<String, Integer> skuInCart) {
+    private boolean isPromotionApplicable(Map<String, Integer> skuInCart) {
         return skuInCart.keySet().containsAll(listOfSku);
     }
 }
