@@ -1,5 +1,6 @@
 package product;
 
+import lombok.Setter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -10,7 +11,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class StockData {
     private String path;
@@ -24,7 +24,7 @@ public class StockData {
         Object obj = null;
         try {
             obj = readFromFile(path);
-        } catch (Exception exception) {
+        } catch (IOException | ParseException exception ) {
             exception.printStackTrace();
         }
         JSONObject jsonObject = (JSONObject) obj;
