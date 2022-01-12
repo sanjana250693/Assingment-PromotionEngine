@@ -9,8 +9,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PromotionApp {
+/**
+ * The PromotionApp program implements an application that implement a simple
+ * promotion engine for a checkout process and outputs the grand total of the cart.
+ *
+ * @author  Sanjana TG
+ */
 
+public class PromotionApp {
     public static void main (String[] args) {
         System.out.println("Available promotions in the system:");
         System.out.println("3 of A's for 130");
