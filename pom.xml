@@ -7,6 +7,17 @@
     <groupId>org.example</groupId>
     <artifactId>PromotionEngine</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
+        <java.version>14</java.version>
+        <log4j-core.version>2.15.0</log4j-core.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+
+        <!-- Test-->
+        <junit.version>5.4.0</junit.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -27,55 +38,27 @@
         </dependency>
     </dependencies>
 
-    <properties>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
-        <java.version>14</java.version>
-        <log4j-core.version>2.15.0</log4j-core.version>
-        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-
-        <!-- Test-->
-        <junit.version>5.4.0</junit.version>
-
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-        </dependencies>
-    </dependencyManagement>
-
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>${maven-surefire-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <include>**/test*.java</include>
-                        </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.surefire</groupId>
-                            <artifactId>surefire-junit47</artifactId>
-                            <version>${maven-surefire-plugin.version}</version>
-                        </dependency>
-                    </dependencies>
-                    </plugin>
-
-                </plugins>
-            </build>
-        </profile>
-
-    </profiles>
-
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*Test*.java</include>
+                        </includes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
