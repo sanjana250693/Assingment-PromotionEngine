@@ -1,6 +1,5 @@
 package product;
 
-import lombok.Setter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,6 +11,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ */
 public class StockData {
     private String path;
 
@@ -19,6 +21,10 @@ public class StockData {
         this.path = "./src/main/resources/ProductData.json";
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Product> getAvailableStockData() {
         List<Product> productStock = new ArrayList<>();
         Object obj = null;

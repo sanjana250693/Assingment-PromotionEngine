@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import product.Product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @AllArgsConstructor
 public class MultipleSkuForFixedPrice implements Rules {
@@ -18,23 +15,18 @@ public class MultipleSkuForFixedPrice implements Rules {
     @Override
     public BigDecimal calculateTotal(Cart cart) {
         BigDecimal total = BigDecimal.valueOf(0);
-
         Map<String, Integer> skuInCart = new HashMap<>();
         List<Product> cartItems = cart.getItemsInCart();
         createSkuMap(skuInCart, cartItems);
 
         if(isPromotionApplicable(skuInCart)){
             Integer totalNoOfProducts = 0;
-            Map.Entry<String, Integer> minEntry = null;
-            for (Map.Entry<String, Integer> entry : skuInCart.entrySet()) {
-                minEntry = fetchMinEntryFromMap(minEntry, entry);
-                totalNoOfProducts += entry.getValue();
-            }
-
-            total = total.add(BigDecimal.valueOf(minEntry.getValue()).multiply(promotionPrice));
-            if(totalNoOfProducts - minEntry.getValue() > minEntry.getValue()) {
+            Integer minValueInMap = Collections.min(skuInCart.values());
+            totalNoOfProducts = getTotalProductsInCart(skuInCart, totalNoOfProducts);
+            total = total.add(BigDecimal.valueOf(minValueInMap).multiply(promotionPrice));
+            if((totalNoOfProducts - minValueInMap) > minValueInMap) {
                 //Calculate unit price for remaining qty which do not
-                total = calculateUnitPrice(cartItems, total, skuInCart, minEntry);
+                total = calculateUnitPrice(cartItems, total, skuInCart, minValueInMap);
             }
         }else{
             for(Product product : cartItems){
@@ -44,6 +36,13 @@ public class MultipleSkuForFixedPrice implements Rules {
             }
         }
         return total;
+    }
+
+    private Integer getTotalProductsInCart(Map<String, Integer> skuInCart, Integer totalNoOfProducts) {
+        for (Map.Entry<String, Integer> entry : skuInCart.entrySet()) {
+            totalNoOfProducts += entry.getValue();
+        }
+        return totalNoOfProducts;
     }
 
     private Map.Entry<String, Integer> fetchMinEntryFromMap (Map.Entry<String, Integer> minEntry, Map.Entry<String, Integer> entry) {
@@ -61,19 +60,19 @@ public class MultipleSkuForFixedPrice implements Rules {
         }
     }
 
-    private BigDecimal calculateUnitPrice(List<Product> cartItems, BigDecimal total, Map<String, Integer> skuInCart, Map.Entry<String, Integer> minEntry) {
+    private BigDecimal calculateUnitPrice(List<Product> cartItems, BigDecimal total, Map<String, Integer> skuInCart, Integer minEntry) {
         for(Map.Entry<String, Integer> availableQty : skuInCart.entrySet()){
-            if(availableQty.getValue() > minEntry.getValue()){
+            if(availableQty.getValue() > minEntry){
                 total = computeTotalForRemainingQty(cartItems, total, minEntry, availableQty);
             }
         }
         return total;
     }
 
-    private BigDecimal computeTotalForRemainingQty(List<Product> cartItems, BigDecimal total, Map.Entry<String, Integer> minEntry, Map.Entry<String, Integer> availableQty) {
+    private BigDecimal computeTotalForRemainingQty(List<Product> cartItems, BigDecimal total, Integer minEntry, Map.Entry<String, Integer> availableQty) {
         for (Product product : cartItems) {
             if (product.getProductID().equals(availableQty.getKey())) {
-                total = total.add(BigDecimal.valueOf(availableQty.getValue()- minEntry.getValue()).multiply(product.getUnitPrice()));
+                total = total.add(BigDecimal.valueOf(availableQty.getValue()- minEntry).multiply(product.getUnitPrice()));
             }
         }
         return total;
