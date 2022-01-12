@@ -50,6 +50,11 @@ public class MultipleSkuForFixedPrice implements Rules {
         return total;
     }
 
+    /**
+     * This method is used to create map of sku's and purchase quantity.
+     * @param skuInCart - All Sku's in shopping cart.
+     * @param  cartItems - Items in cart.
+     */
     private void createSkuMap(Map<String, Integer> skuInCart, List<Product> cartItems) {
         for(Product product : cartItems){
             if(product.getPurchaseQuantity()!=0 && listOfSku.contains(product.getProductID())) {
