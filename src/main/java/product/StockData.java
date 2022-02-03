@@ -22,7 +22,7 @@ public class StockData {
 
     //Set the path of Json file.
     public StockData() {
-        this.path = "./src/main/resources/ProductData.json";
+        this.path = "./src/main/resources/productData.json";
     }
 
     /**

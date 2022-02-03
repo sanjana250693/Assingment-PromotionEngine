@@ -1,6 +1,8 @@
 package unittest;
 
 import cart.Cart;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import product.Product;

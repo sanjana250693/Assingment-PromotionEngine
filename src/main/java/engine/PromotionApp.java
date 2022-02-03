@@ -1,11 +1,15 @@
 package engine;
 
 import cart.Cart;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import product.Product;
+import product.PromotionUtil;
 import promotion.ApplyPromotion;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,24 +19,25 @@ import java.util.List;
  *
  * @author  Sanjana TG
  */
-
 public class PromotionApp {
+    private static Log log = LogFactory.getLog(PromotionApp.class);
     public static void main (String[] args) {
-        System.out.println("Available promotions in the system:");
-        System.out.println("3 of A's for 130");
-        System.out.println("2 of B's for 45");
-        System.out.println("C & D for 30\n");
+        PromotionUtil property = new PromotionUtil();
+        log.info("Available promotions in the system:");
+        String promotionsAvailable = property.getPromotionUtil().getProperty("promotions.in.system");
+        log.info(promotionsAvailable+"\n");
+
+        String productSkus = property.getPromotionUtil().getProperty("products.in.system");
+        String[] productsInSystem = productSkus.split(",");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        Integer productQty = 0;
-        String[] productsInSystem = {"A", "B", "C", "D"};
         List<Product> itemsInCart = new ArrayList<>();
         Cart cart = new Cart(itemsInCart);
         for (String sku : productsInSystem) {
-            cart.getInputFromUser(sku, br, cart);
+            cart.getInputFromUser(sku.trim(), br, cart);
         }
             //Apply promotion to product in cart.
             ApplyPromotion apply = new ApplyPromotion();
-            System.out.println("Grand total = " + apply.applyPromo(cart));
-            System.out.println("===============================");
+            BigDecimal grandTotal = apply.applyPromo(cart);
+            log.info("Grand total = " + grandTotal);
     }
 }

@@ -1,0 +1,4 @@
+unittest\StockDataTest.class
+unittest\SampleDataTest.class
+unittest\NSkuForFixedPriceTest.class
+unittest\MultipleSkuForFixedPriceTest.class

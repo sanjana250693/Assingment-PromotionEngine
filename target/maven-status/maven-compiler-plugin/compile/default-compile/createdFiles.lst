@@ -1,0 +1,10 @@
+product\PromotionException.class
+promotion\Rules.class
+cart\Cart.class
+promotion\MultipleSkuForFixedPrice.class
+product\PromotionUtil.class
+promotion\NSkuForFixedPrice.class
+product\StockData.class
+product\Product.class
+promotion\ApplyPromotion.class
+engine\PromotionApp.class

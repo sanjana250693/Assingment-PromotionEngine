@@ -3,6 +3,8 @@ package product;
 import cart.Cart;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,6 +20,8 @@ import java.util.List;
 @Getter
 @Setter
 public class Product {
+    private static Log log = LogFactory.getLog(Product.class);
+
     private String productID;
     private Integer inStock;
     private BigDecimal unitPrice;
@@ -41,11 +45,14 @@ public class Product {
      * @param  cart - shopping cart.
      * @return Nothing.
      */
-    public void validateQuantity(String productID, Integer qty, Cart cart) {
+    public void validateQuantity(String productID, Integer qty, Cart cart) throws PromotionException {
         Product item = new Product();
         List<Product> cartItems = cart.getItemsInCart();
         Product currentProduct = getCurrentProduct(productID, new Product());
         if (currentProduct != null && qty != null && qty <= currentProduct.getInStock()) {
+            if (qty > currentProduct.getInStock()) {
+                throw new PromotionException("This product is Out of Stock.");
+            }
             item.setProductID(productID);
             item.setPurchaseQuantity(qty);
             //set unit price
@@ -53,7 +60,7 @@ public class Product {
             cartItems.add(item);
             cart.setItemsInCart(cartItems);
         } else {
-            System.out.println("Warning: Available stock is " + currentProduct.getInStock() + ". Please enter quantity within this limit.");
+            log.warn("Warning: Available stock is " + currentProduct.getInStock() + ". Please enter quantity within this limit.");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             cart.getInputFromUser(currentProduct.getProductID(), br, cart);
         }

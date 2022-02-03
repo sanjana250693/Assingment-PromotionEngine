@@ -1,6 +1,8 @@
 package unittest;
 
 import cart.Cart;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,16 +17,17 @@ import java.util.List;
 import java.util.Objects;
 
 public class SampleDataTest {
+    private static Log log = LogFactory.getLog(SampleDataTest.class);
     NSkuForFixedPrice nSkuForFixedPriceForA;
     NSkuForFixedPrice nSkuForFixedPriceForB;
     MultipleSkuForFixedPrice multipleSkuForFixedPrice;
 
     @BeforeAll
     public static void displayPromotion(){
-        System.out.println("Available promotions in the system:");
-        System.out.println("3 of A's for 130");
-        System.out.println("2 of B's for 45");
-        System.out.println("C & D for 30\n");
+        log.info("Available promotions in the system:");
+        log.info("3 of A's for 130");
+        log.info("2 of B's for 45");
+        log.info("C & D for 30\n");
     }
 
     @BeforeEach
@@ -42,8 +45,8 @@ public class SampleDataTest {
         Product productD = createProduct("D", BigDecimal.valueOf(15), 0, 10);
         Cart cart = createCart(new ArrayList<>(Arrays.asList(productA,productB, productC, productD)));
         BigDecimal grandTotal = nSkuForFixedPriceForA.calculateTotal(cart).add(nSkuForFixedPriceForB.calculateTotal(cart)).add(multipleSkuForFixedPrice.calculateTotal(cart));
-        System.out.println("Products in cart: A=1, B=1, C=1, D=1");
-        System.out.println("GrandTotal: " + grandTotal +"\n");
+        log.info("Products in cart: A=1, B=1, C=1, D=1");
+        log.info("GrandTotal: " + grandTotal +"\n");
         assert Objects.equals(grandTotal, BigDecimal.valueOf(100));
     }
 
@@ -55,8 +58,8 @@ public class SampleDataTest {
         Product productD = createProduct("D", BigDecimal.valueOf(15), 0, 10);
         Cart cart = createCart(new ArrayList<>(Arrays.asList(productA,productB, productC, productD)));
         BigDecimal grandTotal = nSkuForFixedPriceForA.calculateTotal(cart).add(nSkuForFixedPriceForB.calculateTotal(cart)).add(multipleSkuForFixedPrice.calculateTotal(cart));
-        System.out.println("Products in cart: A=5, B=5, C=1, D=0");
-        System.out.println("GrandTotal: " + grandTotal+"\n");
+        log.info("Products in cart: A=5, B=5, C=1, D=0");
+        log.info("GrandTotal: " + grandTotal+"\n");
         assert Objects.equals(grandTotal, BigDecimal.valueOf(370));
     }
 
@@ -68,8 +71,8 @@ public class SampleDataTest {
         Product productD = createProduct("D", BigDecimal.valueOf(15), 1, 10);
         Cart cart = createCart(new ArrayList<>(Arrays.asList(productA,productB, productC, productD)));
         BigDecimal grandTotal = nSkuForFixedPriceForA.calculateTotal(cart).add(nSkuForFixedPriceForB.calculateTotal(cart)).add(multipleSkuForFixedPrice.calculateTotal(cart));
-        System.out.println("Products in cart: A=3, B=5, C=1, D=1");
-        System.out.println("GrandTotal: " + grandTotal+"\n");
+        log.info("Products in cart: A=3, B=5, C=1, D=1");
+        log.info("GrandTotal: " + grandTotal+"\n");
         assert Objects.equals(grandTotal, BigDecimal.valueOf(280));
     }
 
